@@ -11,4 +11,20 @@ const getUsers = (req, res) => {
     });
 }
 
-module.exports = {getUsers}
+const createUsers = (req, res) => {
+    const name = req.body.name;
+
+    models.User.create({name: name})
+        .then(user => {
+            return res.status(201).json(user);
+        })
+        .catch(err => {
+            console.log(err.message);
+            if (err.name === "SequelizeUniqueConstraintError") {
+                return res.status(409).end();
+            }
+            return res.status(500).end();
+        });
+}
+
+module.exports = {getUsers, createUsers}
